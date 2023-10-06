@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import { Views } from 'react-big-calendar';
 import moment from 'moment';
+import {ptBR} from "date-fns/locale";
 import React, { FC } from 'react';
 import Button, { ButtonGroup } from '../bootstrap/Button';
 import Dropdown, { DropdownItem, DropdownMenu, DropdownToggle } from '../bootstrap/Dropdown';
 
+moment.locale('pt-BR');
 export const getUnitType = (viewMode: 'month' | 'week' | 'work_week' | 'day' | 'agenda') => {
 	let unitType = null;
 	switch (viewMode) {
@@ -26,18 +28,7 @@ export const getLabel = (
 	date: moment.MomentInput,
 	viewMode: 'month' | 'week' | 'work_week' | 'day' | 'agenda',
 ) => {
-	if (viewMode === Views.MONTH) return moment(date).format('MMMM YYYY');
-	if (viewMode === Views.WEEK)
-		return `${moment(date).startOf('week').format('MMM D')} - ${moment(date)
-			.endOf('week')
-			.format('MMM D')}`;
-	if (viewMode === Views.WORK_WEEK)
-		return `${moment(date).startOf('week').add(1, 'day').format('MMM D')} - ${moment(date)
-			.endOf('week')
-			.add(-1, 'day')
-			.format('MMM D')}`;
-	if (viewMode === Views.AGENDA)
-		return `${moment(date).format('L')} - ${moment(date).add(1, 'month').format('L')}`;
+	if (viewMode === Views.MONTH || viewMode === Views.AGENDA) return moment(date).format('MM/YYYY');
 	return moment(date).format('dddd, MMM D');
 };
 

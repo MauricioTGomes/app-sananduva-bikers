@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { dashboardPagesMenu, pages } from '../menu';
+import { dashboardPagesMenu } from '../menu';
 import general from './route/general';
 
 const LANDING = {
@@ -14,7 +14,7 @@ const presentation = [
 		path: dashboardPagesMenu.dashboard.path,
 		element: <LANDING.DASHBOARD />,
 	},
-	// ...admin
+	...general
 ];
 const contents = [...presentation];
 

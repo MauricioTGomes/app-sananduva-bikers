@@ -4,7 +4,26 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f3cd425-e613-424c-9cb2-ffef1121541d" name="Changes" comment="" />
+    <list default="true" id="2f3cd425-e613-424c-9cb2-ffef1121541d" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/src/pages/presentation/event/Edit.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/presentation/event/List.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/presentation/year/Edit.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/pages/presentation/year/List.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ea0d5d2f-aa85-4f83-8634-bca308088581.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/ea0d5d2f-aa85-4f83-8634-bca308088581.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/ea0d5d2f-aa85-4f83-8634-bca308088581/storage_v2/_src_/schema/bikers.4r00rQ.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/ea0d5d2f-aa85-4f83-8634-bca308088581/storage_v2/_src_/schema/bikers.4r00rQ.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/common/data/events.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/common/data/events.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/bootstrap/Toasts.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/bootstrap/Toasts.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/extras/calendarHelper.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/extras/calendarHelper.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hooks/useSelectTable.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/hooks/useSortableData.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/menu.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/menu.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/_layout/_asides/DefaultAside.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/_layout/_asides/DefaultAside.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/presentation/dashboard/DashboardPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/presentation/dashboard/DashboardPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/presentation/dashboard/Member/CommonRightPanel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/presentation/dashboard/Member/CommonRightPanel.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/contentRoutes.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/contentRoutes.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/route/general.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/route/general.jsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -20,9 +39,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="PhpWorkspaceProjectConfiguration" interpreter_name="/opt/homebrew/Cellar/php/8.2.10/bin/php" />
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 1
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 1
+}</component>
   <component name="ProjectId" id="2VwkVvnTveEPDikrG0xxvEzENL0" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -33,7 +52,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "/Users/mauriciogomes/Documents/Projetos/api-sananduva-bikers/database/migrations",
+    "last_opened_file_path": "/Users/mauriciogomes/Documents/Projetos/app-sananduva-bikers/src/pages/presentation",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -51,6 +70,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/pages/presentation" />
+      <recent name="$PROJECT_DIR$/src/pages/presentation/year" />
       <recent name="$PROJECT_DIR$/../api-sananduva-bikers/database/migrations" />
       <recent name="$PROJECT_DIR$/src/common/data" />
       <recent name="$PROJECT_DIR$/src/pages/presentation/auth" />
@@ -64,7 +85,10 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1695754556323</updated>
-      <workItem from="1695754557449" duration="26033000" />
+      <workItem from="1695754557449" duration="26676000" />
+      <workItem from="1696115158746" duration="1863000" />
+      <workItem from="1696371902730" duration="2206000" />
+      <workItem from="1696528709329" duration="19041000" />
     </task>
     <servers />
   </component>
@@ -118,7 +142,6 @@
         <line-breakpoint enabled="true" type="javascript">
           <url>file://$PROJECT_DIR$/src/routes/contentRoutes.tsx</url>
           <line>11</line>
-          <properties lambdaOrdinal="-1" />
           <option name="timeStamp" value="1" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="php-line-method">

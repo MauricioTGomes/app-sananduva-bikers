@@ -19,29 +19,125 @@ import Icon from '../../../../components/icon/Icon';
 import useDarkMode from '../../../../hooks/useDarkMode';
 import AuthContext from "../../../../contexts/authContext";
 import {formatHoraMin, formatKm} from '../../../../helpers/helpers';
+import api from "../../../../services/api";
 
-interface IUserAppointment {
-    [key: string]: 'Aprovado' | 'Pendente' | 'Rejetada';
+interface IButtons {
+    [key: string]: 'Eventos' | 'Meus Eventos' | 'Rejetada';
 }
 interface ICommonRightPanel {
     setOpen(...args: unknown[]): unknown;
     isOpen: boolean;
+    events: any[];
 }
-const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen }) => {
+const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen, events }) => {
     const { themeStatus, darkModeStatus } = useDarkMode();
     const { userData } = useContext(AuthContext);
 
-    const USER_APPOINTMENT: IUserAppointment = {
-        APPROVED: 'Aprovado',
-        PENDING: 'Pendente',
+    const BUTTONS: IButtons = {
+        EVENT: 'Eventos',
+        MY_EVENT: 'Meus Eventos',
         REJECTED: 'Rejetada',
     };
-    const [activeUserAppointmentTab, setActiveUserAppointmentTab] = useState<
-        IUserAppointment['key']
-    >(USER_APPOINTMENT.APPROVED);
-    const handleActiveUserAppointmentTab = (tabName: IUserAppointment['key']) => {
-        setActiveUserAppointmentTab(tabName);
+
+    const [activeTab, setActiveTab] = useState<
+        IButtons['key']
+    >(BUTTONS.EVENT);
+    const [myEvents, setMyEvents] = useState<any[]>([]);
+
+    const handleActiveTab = (tabName: IButtons['key']) => {
+        if (tabName === BUTTONS['MY_EVENT']) {
+            api.get('event/getMyEvents/' + userData.id).then(resp => setMyEvents(resp.data));
+        }
+        setActiveTab(tabName);
     };
+
+    const styleEvent = (event: any, userEvent?: any) => (
+        <Card>
+            <CardBody>
+                <div className='row g-3 align-items-center'>
+                    <div className='col d-flex align-items-center'>
+                        <div className='flex-shrink-0'>
+                            <div className='ratio ratio-1x1' style={{ width: 72 }}>
+                                <div
+                                    className={classNames(
+                                        'rounded-2 d-flex align-items-center justify-content-center',
+                                        {
+                                            'bg-l10-info': !darkModeStatus,
+                                            'bg-lo25-info': darkModeStatus,
+                                        },
+                                    )}>
+                                    <span className={classNames(
+                                        'fs-1 fw-bold',
+                                        {
+                                            'text-info': !userEvent || userEvent.status === 'PENDING',
+                                            'text-success': userEvent && userEvent.status === 'APPROVED',
+                                            'text-danger': userEvent && userEvent.status === 'REPROVED',
+                                        },
+                                    )}>
+                                        <Icon icon={ event.icon ? event.icon : 'PedalBike' } />
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='flex-grow-1 ms-3 d-flex justify-content-between align-items-center'>
+                            <div>
+                                <div className='fw-bold fs-6 mb-0'>{ event.name }</div>
+                                <div className='text-muted'>
+                                    <small>
+                                        Data:{' '}
+                                        <span className={classNames(
+                                            `fw-bold`,
+                                            {
+                                                'text-info': !userEvent || userEvent.status === 'PENDING',
+                                                'text-success': userEvent && userEvent.status === 'APPROVED',
+                                                'text-danger': userEvent && userEvent.status === 'REPROVED',
+                                            },
+                                        )}>
+                                            {event.date_formatted}
+                                        </span>
+                                    </small>
+                                </div>
+                                {
+                                    userEvent && (
+                                        <div className='text-muted'>
+                                            <small>
+                                                Status:{' '}
+                                                <span className={classNames(
+                                                    `fw-bold`,
+                                                    {
+                                                        'text-info': !userEvent || userEvent.status === 'PENDING',
+                                                        'text-success': userEvent && userEvent.status === 'APPROVED',
+                                                        'text-danger': userEvent && userEvent.status === 'REPROVED',
+                                                    },
+                                                )}>
+                                            { userEvent.status === 'PENDING' ? 'Pendente' : (userEvent.status === 'APPROVED' ? 'Aprovado' : 'Rejeitado') }
+                                        </span>
+                                            </small>
+                                        </div>
+                                    )
+                                }
+                            </div>
+                        </div>
+                    </div>
+                    <div className='col-auto'>
+                        <div
+                            className={classNames(
+                                `fw-bold px-3 py-2 rounded-pill`,
+                                {
+                                    'bg-l10-info': !darkModeStatus,
+                                    'bg-lo25-info': darkModeStatus,
+                                    'text-info': !userEvent || userEvent.status === 'PENDING',
+                                    'text-success': userEvent && userEvent.status === 'APPROVED',
+                                    'text-danger': userEvent && userEvent.status === 'REPROVED',
+                                },
+                            )}>
+                            {event.points} Pontos
+                        </div>
+                    </div>
+                </div>
+            </CardBody>
+        </Card>
+    );
 
     return (
         <OffCanvas setOpen={setOpen} isOpen={isOpen} isRightPanel>
@@ -145,14 +241,14 @@ const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen }) => {
                         'bg-lo50-info': darkModeStatus,
                     })}>
                     <div className='row row-cols-3 g-3 pb-3 px-3 mt-0'>
-                        {Object.keys(USER_APPOINTMENT).map((key) => (
+                        {Object.keys(BUTTONS).map((key) => (
                             <div
-                                key={USER_APPOINTMENT[key]}
+                                key={BUTTONS[key]}
                                 className='col d-flex flex-column align-items-center'>
                                 <Button
                                     color={
                                         (darkModeStatus &&
-                                            activeUserAppointmentTab === USER_APPOINTMENT[key]) ||
+                                            activeTab === BUTTONS[key]) ||
                                         !darkModeStatus
                                             ? 'dark'
                                             : undefined
@@ -160,17 +256,23 @@ const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen }) => {
                                     className='w-100 text-capitalize'
                                     rounded={1}
                                     onClick={() =>
-                                        handleActiveUserAppointmentTab(USER_APPOINTMENT[key])
+                                        handleActiveTab(BUTTONS[key])
                                     }
-                                    isLight={activeUserAppointmentTab !== USER_APPOINTMENT[key]}>
+                                    isLight={activeTab !== BUTTONS[key]}>
                                     <div className='h6 mb-3 text-muted opacity-80'>
-                                        {USER_APPOINTMENT[key]}
+                                        {BUTTONS[key]}
                                     </div>
                                     <div
                                         className={classNames('h2', {
                                             'text-light': darkModeStatus,
                                         })}>
-                                        1
+                                        {
+                                            key === 'EVENT' ? (
+                                                events.length
+                                            ) : (
+                                                key === 'MY_EVENT' ? myEvents.length : 15
+                                            )
+                                        }
                                     </div>
                                 </Button>
                             </div>
@@ -178,55 +280,13 @@ const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen }) => {
                     </div>
                 </div>
 
-                 <Card>
-                    <CardBody>
-                        <div className='row g-3 align-items-center'>
-                            <div className='col d-flex align-items-center'>
-                                <div className='flex-shrink-0'>
-                                    <div className='ratio ratio-1x1' style={{ width: 72 }}>
-                                        <div
-                                            className={classNames(
-                                                'rounded-2 d-flex align-items-center justify-content-center',
-                                                {
-                                                    'bg-l10-info': !darkModeStatus,
-                                                    'bg-lo25-info': darkModeStatus,
-                                                },
-                                            )}>
-                                            <span className='text-info fs-1 fw-bold'>
-                                                <Icon icon='DirectionsBike' />
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='flex-grow-1 ms-3 d-flex justify-content-between align-items-center'>
-                                    <div>
-                                        <div className='fw-bold fs-6 mb-0'>Pedal Tapejara</div>
-                                        <div className='text-muted'>
-                                            <small>
-                                                Data:{' '}
-                                                <span className='text-info fw-bold'>
-                                                    12/09/2023
-                                                </span>
-                                            </small>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className='col-auto'>
-                                <div
-                                    className={classNames(
-                                        `text-info fw-bold px-3 py-2 rounded-pill`,
-                                        {
-                                            'bg-l10-info': !darkModeStatus,
-                                            'bg-lo25-info': darkModeStatus,
-                                        },
-                                    )}>
-                                    300 Pontos
-                                </div>
-                            </div>
-                        </div>
-                    </CardBody>
-                </Card>
+                {
+                    activeTab === BUTTONS['EVENT'] && events.map((event: any) => styleEvent(event))
+                }
+
+                {
+                    activeTab === BUTTONS['MY_EVENT'] && myEvents.map((userEvent: any) => styleEvent(userEvent.event, userEvent))
+                }
             </OffCanvasBody>
         </OffCanvas>
     );

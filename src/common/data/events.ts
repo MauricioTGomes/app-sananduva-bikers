@@ -5,6 +5,7 @@ export interface IEvent {
 	end?: Date;
 	icon?: string;
 	name: string;
+	description?: string;
 	points: number;
 	color: string;
 }

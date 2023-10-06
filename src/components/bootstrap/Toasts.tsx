@@ -107,12 +107,13 @@ ToastContainer.propTypes = {
 };
 
 interface IToastsProps {
-	title: ReactNode;
+	title?: ReactNode;
 	children: ReactNode;
 	icon?: TIcons;
 	iconColor?: TColor;
 	time?: string | null;
 	isDismiss?: boolean;
+	type: string;
 }
 const Toasts: FC<IToastsProps> = ({
 	icon,
@@ -121,11 +122,19 @@ const Toasts: FC<IToastsProps> = ({
 	time,
 	isDismiss,
 	children,
+    type,
 	...props
 }) => {
 	// @ts-ignore
 	// eslint-disable-next-line react/prop-types
 	const { onDismiss } = props;
+
+	if (type === 'warning') {
+		title = 'Atenção!!';
+		icon = 'Warning';
+		iconColor = 'warning';
+	}
+
 	return (
 		<>
 			<ToastHeader
@@ -142,7 +151,7 @@ const Toasts: FC<IToastsProps> = ({
 	);
 };
 Toasts.propTypes = {
-	title: PropTypes.node.isRequired,
+	title: PropTypes.node,
 	children: PropTypes.node.isRequired,
 	icon: PropTypes.string,
 	iconColor: PropTypes.oneOf([
@@ -155,6 +164,11 @@ Toasts.propTypes = {
 		'light',
 		'dark',
 	]),
+	type: PropTypes.oneOf([
+		'warning',
+		'success',
+		'info'
+	]).isRequired,
 	time: PropTypes.string,
 	isDismiss: PropTypes.bool,
 };

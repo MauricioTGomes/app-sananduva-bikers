@@ -32,6 +32,8 @@ import AuthContext from "../../../contexts/authContext";
 import OffCanvas, {OffCanvasBody, OffCanvasHeader, OffCanvasTitle} from "../../../components/bootstrap/OffCanvas";
 import FormGroup from "../../../components/bootstrap/forms/FormGroup";
 import Input from "../../../components/bootstrap/forms/Input";
+import ThemeContext from "../../../contexts/themeContext";
+import Textarea from "../../../components/bootstrap/forms/Textarea";
 
 moment.locale('pt-BR');
 const localizer = momentLocalizer(moment);
@@ -51,20 +53,20 @@ const DashboardBookingPage = () => {
 	const { setAuth } = useContext(AuthContext);
 	const { darkModeStatus, themeStatus } = useDarkMode();
 	const [events, setEvents] = useState(eventList);
+	const { setRightPanel } = useContext(ThemeContext);
 	const [toggleRightPanel, setToggleRightPanel] = useState(true);
 	const [toggleEventInfo, setToggleEventInfo] = useState(false);
 	const [eventInfo, setEventInfo] = useState<IEvent>(events[0]);
 	useMinimizeAside();
-
-	useEffect(() => {
-		setEvents(eventList);
-		return () => {};
-	}, []);
-
 	const [viewMode, setViewMode] = useState<TView>(Views.MONTH);
 	const [date, setDate] = useState(new Date());
 	const unitType = getUnitType(viewMode);
 	const calendarDateLabel = getLabel(date, viewMode);
+
+	const handleRightPainel = () => {
+		setRightPanel(!toggleRightPanel);
+		setToggleRightPanel(!toggleRightPanel);
+	}
 	const handleViewMode = (e: moment.MomentInput) => {
 		setDate(moment(e).toDate());
 		setViewMode(Views.DAY);
@@ -83,6 +85,33 @@ const DashboardBookingPage = () => {
 			})
 	}
 
+	const getEvents = () => {
+		api.post('event/getEvents', {date: moment(date).format(moment.HTML5_FMT.DATE), viewMode})
+			.then(async (resp: any) => {
+				let arrTmp:any[] = [];
+
+				await resp.data.forEach((event: any) => {
+					arrTmp.push({
+						...event,
+						start: moment(event.date).toDate(),
+						end: moment(event.date).toDate(),
+						icon: event.type
+					});
+				})
+
+				setEvents(arrTmp);
+			})
+	}
+
+	useEffect(() => {
+		setEvents(eventList);
+		return () => {};
+	}, []);
+
+	useEffect(() => {
+		getEvents();
+	}, [date, viewMode]);
+
 	return (
 		<PageWrapper title='teste'>
 			<SubHeader>
@@ -95,7 +124,7 @@ const DashboardBookingPage = () => {
 				<SubHeaderRight>
 					<Button
 						icon='Groups'
-						onClick={() => setToggleRightPanel(!toggleRightPanel)}
+						onClick={() => handleRightPainel()}
 						color={toggleRightPanel ? 'dark' : 'light'}
 						aria-label='Toggle right panel'
 					/>
@@ -165,6 +194,16 @@ const DashboardBookingPage = () => {
 												</div>
 
 												<div className='col-12'>
+													<FormGroup id='description' label='Descrição / Detalhes'>
+														<Textarea
+															rows={4}
+															value={eventInfo.description}
+															disabled
+														/>
+													</FormGroup>
+												</div>
+
+												<div className='col-12'>
 													<FormGroup id='points' label='Pontos'>
 														<Input
 															type='text'
@@ -203,7 +242,6 @@ const DashboardBookingPage = () => {
 
 					<div
 						className={classNames({
-							'col-xxl-8': !toggleRightPanel,
 							'col-12': toggleRightPanel,
 						})}>
 						<Card stretch style={{ minHeight: 680 }}>
@@ -257,7 +295,7 @@ const DashboardBookingPage = () => {
 					</div>
 				</div>
 				
-				<CommonRightPanel setOpen={setToggleRightPanel} isOpen={toggleRightPanel} />
+				<CommonRightPanel events={events} setOpen={handleRightPainel} isOpen={toggleRightPanel} />
 			</Page>
 		</PageWrapper>
 	);

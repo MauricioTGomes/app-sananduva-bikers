@@ -23,3 +23,50 @@ export const dashboardPagesMenu = {
 		subMenu: null,
 	}
 };
+
+export const dashboardPagesMaster = {
+	event: {
+		id: 'event',
+		text: 'Eventos',
+		path: '/event',
+		icon: 'Event',
+		subMenu: {
+			list: {
+				id: 'eventList',
+				text: 'Lista de Eventos',
+				path: '/event/list',
+				icon: 'List',
+				subMenu: null,
+			},
+			edit: {
+				id: 'eventEdit',
+				text: 'Adicionar Evento',
+				path: '/event/edit',
+				icon: 'ExposurePlus1',
+				subMenu: null,
+			}
+		}
+	},
+	year: {
+		id: 'year',
+		text: 'Edições (Ano)',
+		path: '/year-edition',
+		icon: 'EventNote',
+		subMenu: {
+			list: {
+				id: 'yearList',
+				text: 'Lista de Edições',
+				path: '/year-edition/list',
+				icon: 'List',
+				subMenu: null,
+			},
+			edit: {
+				id: 'yearEdit',
+				text: 'Adicionar Edição',
+				path: '/year-edition/edit',
+				icon: 'ExposurePlus1',
+				subMenu: null,
+			}
+		}
+	}
+};
