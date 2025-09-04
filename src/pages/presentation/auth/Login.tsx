@@ -18,8 +18,10 @@ const Login: FC<ILoginProps> = () => {
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const { setAuth } = useContext(AuthContext);
 	const navigate = useNavigate();
+	const [isExec, setIsExec] = useState(false);
 
 	const execLogin = (code: string) => {
+		setIsExec(true)
 		api.post('auth/login', { code })
 			.then((resp: any) => {
 				if (!resp.data.access_token) {
@@ -32,18 +34,17 @@ const Login: FC<ILoginProps> = () => {
 				}
 			})
 	}
-	const getURL = () =>
-		`https://www.strava.com/oauth/authorize?client_id=113681&redirect_uri=http://localhost:3000/auth-pages/login/&response_type=code&approval_prompt=auto&scope=activity%3Awrite%2Cread&state=test`;
 
 	useEffect(() => {
 		let url = new URL(window.location.href);
 		let code = url.searchParams.get('code');
+		url.searchParams.delete('code');
 
-		if (code) {
+		if (isAuthenticated()) {
+			return navigate('/')
+		} else if (code && !isExec) {
 			setIsLoading(true);
 			execLogin(code);
-		} else if (isAuthenticated()) {
-			return navigate('/')
 		}
 	}, []);
 
@@ -76,7 +77,7 @@ const Login: FC<ILoginProps> = () => {
 										<Button
 											tag='a'
 											isDisable={isLoading}
-											href={getURL()}
+											href='http://localhost:8000/getLink'
 											color='warning'
 											className='w-100 py-3'>
 											{isLoading && (

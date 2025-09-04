@@ -18,6 +18,7 @@ import Page from "../../../layout/Page/Page";
 import Breadcrumb from "../../../components/bootstrap/Breadcrumb";
 import showNotification from "../../../components/extras/showNotification";
 import Spinner from "../../../components/bootstrap/Spinner";
+import {useNavigate} from "react-router-dom";
 
 interface IValuesForm {
     name: string;
@@ -29,6 +30,8 @@ interface IValuesForm {
 const Edit = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [editions, setEditions] = useState<any>([]);
+    const navigate = useNavigate();
+
     const formik = useFormik({
         onSubmit<IValuesForm>(
             values: IValuesForm,
@@ -40,7 +43,8 @@ const Edit = () => {
                 if (resp.data.error) {
                     return showNotification('Atenção!', resp.data.message, 'warning');
                 }
-                return showNotification('Sucesso!', resp.data.message, 'success');
+                showNotification('Sucesso!', resp.data.message, 'success');
+                return navigate('/');
             })
 
         },
@@ -49,7 +53,8 @@ const Edit = () => {
             'name': '',
             'description': '',
             'date': moment().add(1, 'days').format('YYYY-MM-DD'),
-            'points': 0
+            'points': 0,
+            'points_companion': 0
         }
     });
 
@@ -132,6 +137,16 @@ const Edit = () => {
                                         placeholder='Pontos'
                                         onChange={formik.handleChange}
                                         value={formik.values.points}
+                                    />
+                                </FormGroup>
+                            </div>
+
+                            <div className='col-6'>
+                                <FormGroup id='points_companion' label='Pontos Acompanhante' isFloating>
+                                    <Input
+                                        placeholder='Pontos Acompanhante'
+                                        onChange={formik.handleChange}
+                                        value={formik.values.points_companion}
                                     />
                                 </FormGroup>
                             </div>

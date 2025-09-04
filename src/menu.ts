@@ -43,6 +43,7 @@ export const dashboardPagesMaster = {
 				text: 'Adicionar Evento',
 				path: '/event/edit',
 				icon: 'ExposurePlus1',
+				role: 'MASTER',
 				subMenu: null,
 			}
 		}
@@ -65,6 +66,7 @@ export const dashboardPagesMaster = {
 				text: 'Adicionar Edição',
 				path: '/year-edition/edit',
 				icon: 'ExposurePlus1',
+				role: 'MASTER',
 				subMenu: null,
 			}
 		}

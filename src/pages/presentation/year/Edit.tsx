@@ -18,6 +18,7 @@ import Page from "../../../layout/Page/Page";
 import Breadcrumb from "../../../components/bootstrap/Breadcrumb";
 import showNotification from "../../../components/extras/showNotification";
 import Spinner from "../../../components/bootstrap/Spinner";
+import {useNavigate} from "react-router-dom";
 
 interface IValuesForm {
     name: string;
@@ -28,6 +29,7 @@ interface IValuesForm {
 }
 const Edit = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
+    const navigate = useNavigate();
     const formikAward = useFormik({
         onSubmit<Values>(
             values: Values,
@@ -48,27 +50,14 @@ const Edit = () => {
             values: IValuesForm,
             formikHelpers: FormikHelpers<IValuesForm>,
         ): void | Promise<any> {
-            // if (values.name === '' || values.description === '' || values.date_start === '' || values.date_end === '' || values.awards.length <= 0) {
-            //     return addToast(
-            //         <Toasts
-            //             type='warning'
-            //             time='Now'
-            //             isDismiss>
-            //             Verifique todos os dados antes de continuar.
-            //         </Toasts>,
-            //         {
-            //             autoDismiss: true,
-            //         },
-            //     );
-            // }
-
             setIsLoading(true);
             api.post('year-edition/save', {...values}).then(resp => {
                 setIsLoading(false);
                 if (resp.data.error) {
                     return showNotification('Atenção!', resp.data.message, 'warning');
                 }
-                return showNotification('Sucesso!', resp.data.message, 'success');
+                showNotification('Sucesso!', resp.data.message, 'success');
+                return navigate('/')
             })
 
         },
@@ -83,14 +72,13 @@ const Edit = () => {
 
     const pushAward = useCallback(
         () => {
-                // if (formikAward.values.gift === '' || formikAward.values.kms <= 0 || formikAward.values.sex === '' || formikAward.values.description === '') {
-                //     return showNotification('Atenção!', 'Informe todos os dados.', 'warning');
-                // }
-
+            if (formikAward.values.gift === '' || formikAward.values.kms <= 0 || formikAward.values.sex === '' || formikAward.values.description === '') {
+                return showNotification('Atenção!', 'Informe todos os dados.', 'warning');
+            }
             let arr = [...formik.values.awards, formikAward.values];
             formik.setFieldValue('awards', arr)
         },
-        [],
+        [formikAward, formik],
     );
 
 
@@ -232,12 +220,18 @@ const Edit = () => {
                                                     <thead>
                                                     <tr>
                                                         <th scope='col'>Descrição</th>
+                                                        <th scope='col'>Sexo</th>
+                                                        <th scope='col'>KMs</th>
+                                                        <th scope='col'>Prêmio</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
                                                     {formik.values.awards.map((i: any, key: number) => (
                                                         <tr key={key}>
                                                             <th scope='row'>{i.description}</th>
+                                                            <th scope='row'>{i.sex == 'M' ? 'Masc' : 'Fem'}</th>
+                                                            <th scope='row'>{i.kms}</th>
+                                                            <th scope='row'>{i.gift}</th>
                                                         </tr>
                                                     ))}
                                                     </tbody>

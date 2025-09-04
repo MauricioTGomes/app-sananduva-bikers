@@ -34,6 +34,7 @@ import FormGroup from "../../../components/bootstrap/forms/FormGroup";
 import Input from "../../../components/bootstrap/forms/Input";
 import ThemeContext from "../../../contexts/themeContext";
 import Textarea from "../../../components/bootstrap/forms/Textarea";
+import Spinner from "../../../components/bootstrap/Spinner";
 
 moment.locale('pt-BR');
 const localizer = momentLocalizer(moment);
@@ -50,11 +51,12 @@ const MyEvent = (data: { event: IEvent }) => {
 };
 
 const DashboardBookingPage = () => {
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const { setAuth } = useContext(AuthContext);
 	const { darkModeStatus, themeStatus } = useDarkMode();
 	const [events, setEvents] = useState(eventList);
 	const { setRightPanel } = useContext(ThemeContext);
-	const [toggleRightPanel, setToggleRightPanel] = useState(true);
+	const [toggleRightPanel, setToggleRightPanel] = useState(false);
 	const [toggleEventInfo, setToggleEventInfo] = useState(false);
 	const [eventInfo, setEventInfo] = useState<IEvent>(events[0]);
 	useMinimizeAside();
@@ -103,6 +105,18 @@ const DashboardBookingPage = () => {
 			})
 	}
 
+	const setEvent = (id: any, type: string = 'PARTICIPANT') => {
+		setIsLoading(false);
+		api.post(`event/setUserEvent/${id}/${type}`)
+			.then((resp: any) => {
+				setIsLoading(false);
+				if (resp.data.error) {
+					return showNotification('Atenção!', resp.data.message, 'warning');
+				}
+				showNotification('Sucesso!', resp.data.message, 'success');
+			})
+	}
+
 	useEffect(() => {
 		setEvents(eventList);
 		return () => {};
@@ -127,7 +141,7 @@ const DashboardBookingPage = () => {
 						onClick={() => handleRightPainel()}
 						color={toggleRightPanel ? 'dark' : 'light'}
 						aria-label='Toggle right panel'
-					/>
+					>Meus status</Button>
 					<Button
 						icon='AreaChart'
 						onClick={syncStrava}
@@ -203,7 +217,7 @@ const DashboardBookingPage = () => {
 													</FormGroup>
 												</div>
 
-												<div className='col-12'>
+												<div className='col-6'>
 													<FormGroup id='points' label='Pontos'>
 														<Input
 															type='text'
@@ -213,10 +227,20 @@ const DashboardBookingPage = () => {
 													</FormGroup>
 												</div>
 
+												<div className='col-6'>
+													<FormGroup id='points' label='Pontos Acompanhante'>
+														<Input
+															type='text'
+															value={eventInfo.points_companion}
+															disabled
+														/>
+													</FormGroup>
+												</div>
+
 												<div className='col-12'>
 													<FormGroup
 														id='start'
-														label='Data inico'>
+														label='Data'>
 														<Input
 															type='date'
 															value={
@@ -232,8 +256,27 @@ const DashboardBookingPage = () => {
 								</div>
 
 								<div className='col'>
-									<Button color='success' onClick={() => alert('tamo indo')}>
-										Eu fui!!
+									<Button
+										color='success'
+										style={{marginRight: '15px'}}
+										isDisable={isLoading}
+										onClick={() => setEvent(eventInfo.id)}
+									>
+										{isLoading && (
+											<Spinner isSmall inButton isGrow />
+										)}
+										Eu fui!
+									</Button>
+
+									<Button
+										color='info'
+										onClick={() => setEvent(eventInfo.id, 'COMPANION')}
+										isDisable={isLoading}
+									>
+										{isLoading && (
+											<Spinner isSmall inButton isGrow />
+										)}
+										Eu Acompanhei!
 									</Button>
 								</div>
 							</div>
@@ -295,7 +338,7 @@ const DashboardBookingPage = () => {
 					</div>
 				</div>
 				
-				<CommonRightPanel events={events} setOpen={handleRightPainel} isOpen={toggleRightPanel} />
+				<CommonRightPanel setOpen={handleRightPainel} isOpen={toggleRightPanel} />
 			</Page>
 		</PageWrapper>
 	);

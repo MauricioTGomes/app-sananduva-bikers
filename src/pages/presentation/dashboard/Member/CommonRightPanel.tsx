@@ -1,4 +1,4 @@
-import React, {FC, useContext, useState} from 'react';
+import React, {FC, useContext, useEffect, useState} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import OffCanvas, { OffCanvasBody } from '../../../../components/bootstrap/OffCanvas';
@@ -22,32 +22,34 @@ import {formatHoraMin, formatKm} from '../../../../helpers/helpers';
 import api from "../../../../services/api";
 
 interface IButtons {
-    [key: string]: 'Eventos' | 'Meus Eventos' | 'Rejetada';
+    [key: string]: 'Pendetes' | 'Aprovados' | 'Rejetados';
 }
 interface ICommonRightPanel {
     setOpen(...args: unknown[]): unknown;
     isOpen: boolean;
-    events: any[];
 }
-const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen, events }) => {
+const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen }) => {
     const { themeStatus, darkModeStatus } = useDarkMode();
     const { userData } = useContext(AuthContext);
 
     const BUTTONS: IButtons = {
-        EVENT: 'Eventos',
-        MY_EVENT: 'Meus Eventos',
-        REJECTED: 'Rejetada',
+        PENDING: 'Pendetes',
+        APPROVED: 'Aprovados',
+        REPROVED: 'Rejetados',
     };
 
     const [activeTab, setActiveTab] = useState<
         IButtons['key']
     >(BUTTONS.EVENT);
     const [myEvents, setMyEvents] = useState<any[]>([]);
+    const [myTotals, setMyTotals] = useState<any>({'pending': 0, 'approved': 0, 'reproved': 0});
 
-    const handleActiveTab = (tabName: IButtons['key']) => {
-        if (tabName === BUTTONS['MY_EVENT']) {
-            api.get('event/getMyEvents/' + userData.id).then(resp => setMyEvents(resp.data));
-        }
+    const getTotals = () => {
+        api.get('event/getMyTotals/' + userData.id).then(resp => console.log(resp.data));
+    };
+
+    const handleActiveTab = (tabName: IButtons['key'], key: string) => {
+        api.get('event/getMyEvents/' + userData.id + '/' + key).then(resp => setMyEvents(resp.data));
         setActiveTab(tabName);
     };
 
@@ -138,6 +140,8 @@ const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen, events }) =>
             </CardBody>
         </Card>
     );
+
+    useEffect(getTotals, [])
 
     return (
         <OffCanvas setOpen={setOpen} isOpen={isOpen} isRightPanel>
@@ -256,7 +260,7 @@ const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen, events }) =>
                                     className='w-100 text-capitalize'
                                     rounded={1}
                                     onClick={() =>
-                                        handleActiveTab(BUTTONS[key])
+                                        handleActiveTab(BUTTONS[key], key)
                                     }
                                     isLight={activeTab !== BUTTONS[key]}>
                                     <div className='h6 mb-3 text-muted opacity-80'>
@@ -267,10 +271,8 @@ const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen, events }) =>
                                             'text-light': darkModeStatus,
                                         })}>
                                         {
-                                            key === 'EVENT' ? (
-                                                events.length
-                                            ) : (
-                                                key === 'MY_EVENT' ? myEvents.length : 15
+                                            key == 'PENDING' ? myTotals.pending : (
+                                                key == 'APPROVED' ? myTotals.approved : myTotals.reproved
                                             )
                                         }
                                     </div>
@@ -281,11 +283,7 @@ const CommonRightPanel: FC<ICommonRightPanel> = ({ setOpen, isOpen, events }) =>
                 </div>
 
                 {
-                    activeTab === BUTTONS['EVENT'] && events.map((event: any) => styleEvent(event))
-                }
-
-                {
-                    activeTab === BUTTONS['MY_EVENT'] && myEvents.map((userEvent: any) => styleEvent(userEvent.event, userEvent))
+                    myEvents.map((userEvent: any) => styleEvent(userEvent.event, userEvent))
                 }
             </OffCanvasBody>
         </OffCanvas>

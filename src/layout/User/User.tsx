@@ -8,8 +8,7 @@ import { NavigationLine } from '../Navigation/Navigation';
 import Icon from '../../components/icon/Icon';
 import useNavigationItemHandle from '../../hooks/useNavigationItemHandle';
 import AuthContext from '../../contexts/authContext';
-import UserImage4 from '../../assets/img/wanna/wanna4.png';
-import UserImage4Webp from '../../assets/img/wanna/wanna4.webp';
+import {removeToken} from "../../services/auth";
 
 const User = () => {
 	const { userData, removeAuth } = useContext(AuthContext);
@@ -99,6 +98,7 @@ const User = () => {
 							role='presentation'
 							className='navigation-item cursor-pointer'
 							onClick={() => {
+								removeToken && removeToken();
 								removeAuth && removeAuth();
 								navigate(`../${pages.login.path}`);
 							}}>

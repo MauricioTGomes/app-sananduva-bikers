@@ -7,6 +7,7 @@ export interface IEvent {
 	name: string;
 	description?: string;
 	points: number;
+	points_companion: number;
 	color: string;
 }
 const events: IEvent[] = [
@@ -17,6 +18,7 @@ const events: IEvent[] = [
 		icon: 'PedalBike',
 		name: 'Pedal Tapejara',
 		points: 300,
+		points_companion: 10,
 		color: 'primary'
 	},
 	{
@@ -26,6 +28,7 @@ const events: IEvent[] = [
 		icon: 'PedalBike',
 		name: 'Pedal Casca',
 		points: 300,
+		points_companion: 10,
 		color: 'primary'
 	}
 ];

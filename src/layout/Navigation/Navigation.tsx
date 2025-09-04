@@ -1,9 +1,10 @@
-import React, { FC, forwardRef, HTMLAttributes, ReactNode, useState } from 'react';
+import React, {FC, forwardRef, HTMLAttributes, ReactNode, useContext, useState} from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { useTranslation } from 'react-i18next';
 import { TIcons } from '../../type/icons-type';
 import Item from './Item';
+import AuthContext from "../../contexts/authContext";
 
 interface IListProps extends HTMLAttributes<HTMLUListElement> {
 	id?: string;
@@ -115,7 +116,7 @@ interface INavigationProps {
 const Navigation = forwardRef<HTMLElement, INavigationProps>(
 	({ menu, horizontal, id, className, ...props }, ref) => {
 		const [activeItem, setActiveItem] = useState(undefined);
-
+		const { userData } = useContext(AuthContext);
 		const { t } = useTranslation('menu');
 
 		function fillMenu(
@@ -143,7 +144,7 @@ const Navigation = forwardRef<HTMLElement, INavigationProps>(
 			isMore: boolean | undefined,
 		) {
 			return Object.keys(data).map((item) =>
-				data[item].path ? (
+				((data[item].role == undefined || userData.role == data[item].role) && data[item].path) ? (
 					<Item
 						key={data[item].id}
 						rootId={rootId}
