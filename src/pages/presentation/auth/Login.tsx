@@ -77,7 +77,7 @@ const Login: FC<ILoginProps> = () => {
 										<Button
 											tag='a'
 											isDisable={isLoading}
-											href='http://localhost:8000/getLink'
+											href='https://api.sananduvabikers.com.br/getLink'
 											color='warning'
 											className='w-100 py-3'>
 											{isLoading && (
